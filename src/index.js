@@ -11,9 +11,9 @@ app.post("/users", async (req, res) => {
   const user = new User(req.body);
   try {
     await user.save();
-    res.status(201).send();
+    res.sendStatus(201);
   } catch (e) {
-    res.status(400).send(e);
+    res.sendStatus(400);
   }
 
   /* user
@@ -31,7 +31,7 @@ app.get("/users", async (req, res) => {
     const users = await User.find({});
     res.send(users);
   } catch (e) {
-    res.status(500).send();
+    res.sendStatus(500);
   }
 
   /* User.find({})
@@ -48,11 +48,11 @@ app.get("/users/:id", async (req, res) => {
     const _id = req.params.id;
     const user = await User.findById(_id);
     if (!user) {
-      return res.status(404).send();
+      return res.sendStatus(404);
     }
     res.send(user);
   } catch (e) {
-    res.status(500).send();
+    res.sendStatus(500);
   }
 });
 
@@ -71,11 +71,23 @@ app.patch("/users/:id", async (req, res) => {
       runValidators: true,
     });
     if (!user) {
-      return res.status(404).send();
+      return res.sendStatus(404);
     }
     res.send(user);
   } catch (e) {
-    res.status(400).send();
+    res.sendStatus(400);
+  }
+});
+
+app.delete("/users/:id", async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) {
+      res.sendStatus(404);
+    }
+    res.send(user);
+  } catch (e) {
+    res.sendStatus(500);
   }
 });
 
@@ -131,6 +143,18 @@ app.patch("/tasks/:id", async (req, res) => {
     res.send(task);
   } catch (e) {
     res.status(400).send();
+  }
+});
+
+app.delete("/tasks/:id", async (req, res) => {
+  try {
+    const task = await Task.findByIdAndDelete(req.params.id);
+    if (!task) {
+      res.sendStatus(404);
+    }
+    res.send(task);
+  } catch (e) {
+    res.sendStatus(500);
   }
 });
 
